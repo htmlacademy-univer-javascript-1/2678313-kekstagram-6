@@ -1,8 +1,8 @@
-const isValidationString = function(str, numb){
+const checkMaxLength = function(str, numb){
   return str.length <= numb;
 };
 
-isValidationString('проверяемая строка', 18);
+checkMaxLength('проверяемая строка', 18);
 
 const isPalindrome = function(str){
   const myStr = str.replaceAll(' ', '').toLowerCase();
