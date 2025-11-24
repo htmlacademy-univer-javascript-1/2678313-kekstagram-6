@@ -1,38 +1,32 @@
-const validationString = function(str, numb){
-  if(str.length <+ numb){
-    return true;
-  }else{
-    return false;
-  }
+const isValidationString = function(str, numb){
+  return str.length <= numb;
 };
 
-validationString('Hello', 5);
+isValidationString('проверяемая строка', 18);
 
-const palindrome = function(str){
+const isPalindrome = function(str){
   const myStr = str.replaceAll(' ', '').toLowerCase();
   let reverse = '';
   for(let i = myStr.length - 1; i >= 0; i--){
     reverse += myStr[i];
   }
-  if(myStr === reverse){
-    return true;
-  }else{
-    return false;
-  }
+  return reverse === myStr;
 };
 
-palindrome('Лёша на полке клопа нашёл ');
+isPalindrome('Лёша на полке клопа нашёл ');
 
-const countNumberInString = function(str){
+const getDigits = function(str){
   let resNumb = '';
   const numbToStr = str.toString();
   for(let i = 0; i < numbToStr.length; i++){
-
-    if(Number.isNaN(parseInt(numbToStr[i], 10)) === false){
+    if(!Number.isNaN(parseInt(numbToStr[i], 10))){
       resNumb += numbToStr[i];
     }
   }
-  return resNumb;
+  if(resNumb === ''){
+    return NaN;
+  }
+  return Number(resNumb);
 };
 
-countNumberInString('1 кефир, 0.5 батона');
+getDigits('А меня проверить');
