@@ -1,44 +1,16 @@
-// const checkMaxLength = function(str, numb){
-//   return str.length <= numb;
-// };
-
-// checkMaxLength('проверяемая строка', 18);
-
-// const isPalindrome = function(str){
-//   const myStr = str.replaceAll(' ', '').toLowerCase();
-//   let reverse = '';
-//   for(let i = myStr.length - 1; i >= 0; i--){
-//     reverse += myStr[i];
-//   }
-//   return reverse === myStr;
-// };
-
-// isPalindrome('Лёша на полке клопа нашёл ');
-
-// const getDigits = function(str){
-//   let resNumb = '';
-//   const numbToStr = str.toString();
-//   for(let i = 0; i < numbToStr.length; i++){
-//     if(!Number.isNaN(parseInt(numbToStr[i], 10))){
-//       resNumb += numbToStr[i];
-//     }
-//   }
-//   if(resNumb === ''){
-//     return NaN;
-//   }
-//   return Number(resNumb);
-// };
-
-// getDigits('А меня проверить');
-
 function parseTimeMinutes(str){
   const timeArr = str.split(':');
   return Number(timeArr[0]) * 60 + Number(timeArr[1]);
 }
 
 function IsDuringWorkingHours(startWorkday, endWorkday, meetingStart, meetingDurationInMinutes){
-  return parseTimeMinutes(meetingStart) >= parseTimeMinutes(startWorkday) &&
-    (parseTimeMinutes(meetingStart) + meetingDurationInMinutes) <= parseTimeMinutes(endWorkday);
+  const startWorkdayMinutes = parseTimeMinutes(startWorkday);
+  const endWorkdayMinutes = parseTimeMinutes(endWorkday);
+  const meetingStartMinutes = parseTimeMinutes(meetingStart);
+  const meetingEndMinutes = meetingStartMinutes + meetingDurationInMinutes;
+
+  return meetingStartMinutes >= startWorkdayMinutes &&
+    meetingEndMinutes <= endWorkdayMinutes;
 }
 
 IsDuringWorkingHours('08:00', '17:30', '14:00', 90);
