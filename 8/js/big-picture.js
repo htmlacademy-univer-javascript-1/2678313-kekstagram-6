@@ -30,7 +30,7 @@ function initBigPicture(posts) {
     likesCountEl.textContent = String(post.likes);
     commentsCountEl.textContent = String(post.comments.length);
     socialCaptionEl.textContent = post.description;
-
+    socialCommentsEl.innerHTML = '';
     const fragment = document.createDocumentFragment();
     (post.comments).forEach((c) => {
       const li = document.createElement('li');
