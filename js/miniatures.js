@@ -5,6 +5,7 @@ const renderPictures = (posts) => {
 
   posts.forEach((post) => {
     const pictureElement = template.querySelector('.picture').cloneNode(true);
+    pictureElement.dataset.postId = post.id;
 
     const img = pictureElement.querySelector('.picture__img');
     const likesCount = pictureElement.querySelector('.picture__likes');
