@@ -1,3 +1,5 @@
 import { getPosts } from './data.js';
+import { renderPictures } from './miniatures.js';
 
-getPosts();
+const Posts = getPosts();
+renderPictures(Posts);
