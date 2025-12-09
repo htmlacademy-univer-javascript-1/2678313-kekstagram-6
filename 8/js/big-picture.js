@@ -11,7 +11,7 @@ function initBigPicture(posts) {
   const closeSelectors = bigPicture.querySelector('.big-picture__cancel');
 
 
-  function onDocumentKeydown(evt) {
+  function onEscapeKeydown(evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       closeModal();
@@ -23,6 +23,27 @@ function initBigPicture(posts) {
     closeModal();
   }
 
+  function createCommentElement(comment) {
+    const li = document.createElement('li');
+    li.className = 'social__comment';
+
+    const img = document.createElement('img');
+    img.className = 'social__picture';
+    img.src = comment.avatar;
+    img.alt = comment.name;
+    img.width = 35;
+    img.height = 35;
+
+    const p = document.createElement('p');
+    p.className = 'social__text';
+    p.textContent = comment.message;
+
+    li.appendChild(img);
+    li.appendChild(p);
+
+    return li;
+  }
+
   const openModal = (post) => {
     bigImg.src = post.url;
     bigImg.alt = post.description;
@@ -32,24 +53,9 @@ function initBigPicture(posts) {
     socialCaptionEl.textContent = post.description;
     socialCommentsEl.innerHTML = '';
     const fragment = document.createDocumentFragment();
+
     (post.comments).forEach((c) => {
-      const li = document.createElement('li');
-      li.className = 'social__comment';
-
-      const img = document.createElement('img');
-      img.className = 'social__picture';
-      img.src = c.avatar;
-      img.alt = c.name;
-      img.width = 35;
-      img.height = 35;
-
-      const p = document.createElement('p');
-      p.className = 'social__text';
-      p.textContent = c.message;
-
-      li.appendChild(img);
-      li.appendChild(p);
-      fragment.appendChild(li);
+      fragment.appendChild(createCommentElement(c));
     });
     socialCommentsEl.appendChild(fragment);
 
@@ -59,7 +65,7 @@ function initBigPicture(posts) {
     bigPicture.classList.remove('hidden');
     document.body.classList.add('modal-open');
 
-    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('keydown', onEscapeKeydown);
     closeSelectors.addEventListener('click', onCloseClick);
   };
 
@@ -67,11 +73,11 @@ function initBigPicture(posts) {
     bigPicture.classList.add('hidden');
     document.body.classList.remove('modal-open');
 
-    document.removeEventListener('keydown', onDocumentKeydown);
+    document.removeEventListener('keydown', onEscapeKeydown);
     closeSelectors.removeEventListener('click', onCloseClick);
 
-    commentCountBlock.classList.add('hidden');
-    commentsLoader.classList.add('hidden');
+    commentCountBlock.classList.remove('hidden');
+    commentsLoader.classList.remove('hidden');
   }
 
   picturesContainer.addEventListener('click', (evt) => {
