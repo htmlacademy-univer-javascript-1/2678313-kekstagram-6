@@ -11,7 +11,7 @@ function initBigPicture(posts) {
   const closeSelectors = bigPicture.querySelector('.big-picture__cancel');
 
 
-  function onEscapeKeydown(evt) {
+  function onModalCloseKeydown(evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       closeModal();
@@ -65,7 +65,7 @@ function initBigPicture(posts) {
     bigPicture.classList.remove('hidden');
     document.body.classList.add('modal-open');
 
-    document.addEventListener('keydown', onEscapeKeydown);
+    document.addEventListener('keydown', onModalCloseKeydown);
     closeSelectors.addEventListener('click', onCloseClick);
   };
 
@@ -73,7 +73,7 @@ function initBigPicture(posts) {
     bigPicture.classList.add('hidden');
     document.body.classList.remove('modal-open');
 
-    document.removeEventListener('keydown', onEscapeKeydown);
+    document.removeEventListener('keydown', onModalCloseKeydown);
     closeSelectors.removeEventListener('click', onCloseClick);
 
     commentCountBlock.classList.remove('hidden');
