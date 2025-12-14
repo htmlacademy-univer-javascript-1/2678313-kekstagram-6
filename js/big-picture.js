@@ -68,8 +68,6 @@ function initBigPicture(posts) {
 
     if(currentComments >= totalComments){
       commentsLoader.classList.add('hidden');
-    }else{
-      commentsLoader.classList.remove('hidden');
     }
 
     onClickCommentsLoader = () => {
