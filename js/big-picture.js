@@ -1,3 +1,5 @@
+import {COMMENTS_BATCH} from './constants.js';
+
 function initBigPicture(posts) {
   const picturesContainer = document.querySelector('.pictures');
   const bigPicture = document.querySelector('.big-picture');
@@ -10,6 +12,7 @@ function initBigPicture(posts) {
   const commentsLoader = bigPicture.querySelector('.comments-loader');
   const closeSelectors = bigPicture.querySelector('.big-picture__cancel');
 
+  let onClickCommentsLoader = null;
 
   function onModalCloseKeydown(evt) {
     if (evt.key === 'Escape') {
@@ -51,17 +54,40 @@ function initBigPicture(posts) {
     likesCountEl.textContent = String(post.likes);
     commentsCountEl.textContent = String(post.comments.length);
     socialCaptionEl.textContent = post.description;
+
+    const totalComments = post.comments.length;
+    const currentComments = Math.min(totalComments, COMMENTS_BATCH);
+
     socialCommentsEl.innerHTML = '';
     const fragment = document.createDocumentFragment();
-
-    (post.comments).forEach((c) => {
+    (post.comments.slice(0, currentComments)).forEach((c) => {
       fragment.appendChild(createCommentElement(c));
     });
     socialCommentsEl.appendChild(fragment);
+    commentCountBlock.innerHTML = `${currentComments} из <span class="comments-count">${totalComments}</span> комментариев`;
 
-    commentCountBlock.classList.add('hidden');
-    commentsLoader.classList.add('hidden');
+    if(currentComments >= totalComments){
+      commentsLoader.classList.add('hidden');
+    }
 
+    onClickCommentsLoader = () => {
+      const currentlyLoadedComments = socialCommentsEl.children.length;
+      const nextCurrentComments = Math.min(currentlyLoadedComments + COMMENTS_BATCH, totalComments);
+
+      const nextFragment = document.createDocumentFragment();
+      (post.comments.slice(currentlyLoadedComments, nextCurrentComments)).forEach((c) => {
+        nextFragment.appendChild(createCommentElement(c));
+      });
+      socialCommentsEl.appendChild(nextFragment);
+      commentCountBlock.innerHTML = `${nextCurrentComments} из <span class="comments-count">${totalComments}</span> комментариев`;
+
+      if(nextCurrentComments >= totalComments){
+        commentsLoader.classList.add('hidden');
+        commentsLoader.removeEventListener('click', onClickCommentsLoader);
+      }
+    };
+
+    commentsLoader.addEventListener('click', onClickCommentsLoader);
     bigPicture.classList.remove('hidden');
     document.body.classList.add('modal-open');
 
@@ -78,6 +104,8 @@ function initBigPicture(posts) {
 
     commentCountBlock.classList.remove('hidden');
     commentsLoader.classList.remove('hidden');
+
+    commentsLoader.removeEventListener('click', onClickCommentsLoader);
   }
 
   picturesContainer.addEventListener('click', (evt) => {
