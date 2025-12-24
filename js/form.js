@@ -1,4 +1,6 @@
 import {HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX} from './constants.js';
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './util.js';
 
 function initImageForm() {
   const form = document.querySelector('.img-upload__form');
@@ -51,13 +53,45 @@ function initImageForm() {
     evt.stopPropagation();
   };
 
+  const hideOverlay = () => {
+    overlay.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  };
+
+  const showOverlay = () => {
+    overlay.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+  };
+
   const onFormSubmit = (evt) => {
+    evt.preventDefault();
     const valid = pristine.validate();
     if (!valid) {
-      evt.preventDefault();
       const firstError = form.querySelector('.pristine-error');
       firstError.scrollIntoView({block: 'center', behavior: 'smooth'});
     }
+
+    submitButton.disabled = true;
+
+    sendData(new FormData(form))
+      .then(() => {
+        closeOverlay();
+        showSuccessMessage();
+      })
+      .catch(() => {
+        hideOverlay();
+        showErrorMessage();
+
+        const restoreForm = () => {
+          showOverlay();
+          document.removeEventListener('error-closed', restoreForm);
+        };
+
+        document.addEventListener('error-closed', restoreForm);
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
   };
 
   const openOverlay = () => {
@@ -70,7 +104,7 @@ function initImageForm() {
     form.addEventListener('submit', onFormSubmit);
   };
 
-  const closeOverlay = () => {
+  function closeOverlay(){
     overlay.classList.add('hidden');
     document.body.classList.remove('modal-open');
 
@@ -85,10 +119,13 @@ function initImageForm() {
 
     pristine.reset();
     submitButton.disabled = false;
-  };
+  }
 
   function onModalCloseKeydown(evt) {
     if (evt.key === 'Escape') {
+      if (document.querySelector('.error')) {
+        return;
+      }
       evt.preventDefault();
       closeOverlay();
     }

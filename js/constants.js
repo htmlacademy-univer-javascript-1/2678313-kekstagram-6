@@ -50,6 +50,22 @@ const HASHTAG_MAX_LENGTH = 20;
 const COMMENT_MAX_LENGTH = 140;
 const HASHTAGREGEX = /^#[A-Za-zА-Яа-яЁё0-9]+$/;
 
+const BASE_URL = 'https://29.javascript.htmlacademy.pro/kekstagram';
+const Route = {
+  GET_DATA: '/data',
+  SEND_DATA: '/',
+};
+const Method = {
+  GET: 'GET',
+  POST: 'POST',
+};
+const ErrorText = {
+  GET_DATA: 'Не удалось загрузить данные. Попробуйте обновить страницу',
+  SEND_DATA: 'Не удалось отправить форму. Попробуйте ещё раз',
+};
+
+const ALERT_SHOW_TIME = 5000;
+
 export {NAMES, DESCRIPTIONS, MESSAGES, SIMILAR_PHOTOS_COUNT, AVATAR_MIN,
   AVATAR_MAX, COMMENT_MESSAGES_MIN, COMMENT_MESSAGES_MAX, LIKES_MIN, LIKES_MAX, COMMENTS_MIN, COMMENTS_MAX, COMMENTS_BATCH,
-  HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX};
+  HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX, BASE_URL, Route, Method, ErrorText, ALERT_SHOW_TIME};
