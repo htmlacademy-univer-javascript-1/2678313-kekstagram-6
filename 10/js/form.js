@@ -1,4 +1,4 @@
-import {HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH} from './constants.js';
+import {HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX} from './constants.js';
 
 function initImageForm() {
   const form = document.querySelector('.img-upload__form');
@@ -14,8 +14,6 @@ function initImageForm() {
     errorTextParent: 'img-upload__field-wrapper',
     errorTextClass: 'pristine-error',
   });
-
-  const hashtagRegex = /^#[A-Za-zА-Яа-яЁё0-9]+$/;
 
   const normalizeHashtags = (value) => {
     if (!value) {
@@ -33,7 +31,7 @@ function initImageForm() {
 
   const validateHashtagFormat = (value) => {
     const tags = normalizeHashtags(value);
-    return tags.every((t) => hashtagRegex.test(t) && t.length <= HASHTAG_MAX_LENGTH);
+    return tags.every((t) => HASHTAGREGEX.test(t) && t.length <= HASHTAG_MAX_LENGTH);
   };
 
   const validateHashtagUnique = (value) => {
@@ -42,15 +40,24 @@ function initImageForm() {
     return unique.size === tags.length;
   };
 
-  pristine.addValidator(hashtagsInput, validateHashtagCount, `Не более ${HASHTAG_MAX_COUNT} хэштегов`);
-  pristine.addValidator(hashtagsInput, validateHashtagFormat, `Хэштег должен начинаться с # и содержать только буквы/цифры, макс ${HASHTAG_MAX_LENGTH} символов`);
-  pristine.addValidator(hashtagsInput, validateHashtagUnique, 'Хэштеги не должны повторяться');
+  pristine.addValidator(hashtagsInput, validateHashtagCount, `Не более ${HASHTAG_MAX_COUNT} хэштегов`, 3, true);
+  pristine.addValidator(hashtagsInput, validateHashtagFormat, `Хэштег должен начинаться с # и содержать только буквы/цифры, макс ${HASHTAG_MAX_LENGTH} символов`, 2, true);
+  pristine.addValidator(hashtagsInput, validateHashtagUnique, 'Хэштеги не должны повторяться', 1, true);
 
   const validateCommentLength = (value) => value.length <= COMMENT_MAX_LENGTH;
   pristine.addValidator(commentInput, validateCommentLength, `Комментарий не должен быть длиннее ${COMMENT_MAX_LENGTH} символов`);
 
   const stopEscPropagation = (evt) => {
     evt.stopPropagation();
+  };
+
+  const onFormSubmit = (evt) => {
+    const valid = pristine.validate();
+    if (!valid) {
+      evt.preventDefault();
+      const firstError = form.querySelector('.pristine-error');
+      firstError.scrollIntoView({block: 'center', behavior: 'smooth'});
+    }
   };
 
   const openOverlay = () => {
@@ -60,6 +67,7 @@ function initImageForm() {
     cancelButton.addEventListener('click', onCancelClick);
     hashtagsInput.addEventListener('keydown', stopEscPropagation);
     commentInput.addEventListener('keydown', stopEscPropagation);
+    form.addEventListener('submit', onFormSubmit);
   };
 
   const closeOverlay = () => {
@@ -70,6 +78,7 @@ function initImageForm() {
     cancelButton.removeEventListener('click', onCancelClick);
     hashtagsInput.removeEventListener('keydown', stopEscPropagation);
     commentInput.removeEventListener('keydown', stopEscPropagation);
+    form.removeEventListener('submit', onFormSubmit);
 
     form.reset();
     fileInput.value = '';
@@ -102,15 +111,6 @@ function initImageForm() {
 
   commentInput.addEventListener('input', () => {
     pristine.validate(commentInput);
-  });
-
-  form.addEventListener('submit', (evt) => {
-    const valid = pristine.validate();
-    if (!valid) {
-      evt.preventDefault();
-      const firstError = form.querySelector('.pristine-error');
-      firstError.scrollIntoView({block: 'center', behavior: 'smooth'});
-    }
   });
 }
 
