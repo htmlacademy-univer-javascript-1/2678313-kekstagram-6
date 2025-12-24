@@ -1,11 +1,6 @@
 import { renderPictures } from './miniatures.js';
 import { debounce } from './util.js';
-import { RANDOM_COUNT } from './constants.js';
-
-const Filter = {
-  RANDOM: 'filter-random',
-  DISCUSSED: 'filter-discussed',
-};
+import { RANDOM_COUNT, FILTER } from './constants.js';
 
 const filtersContainer = document.querySelector('.img-filters');
 const filtersForm = filtersContainer.querySelector('.img-filters__form');
@@ -33,10 +28,10 @@ const applyFilter = (filterName, pictures) => {
   let filteredPictures = [];
 
   switch (filterName) {
-    case Filter.RANDOM:
+    case FILTER.RANDOM:
       filteredPictures = getRandomPictures(pictures);
       break;
-    case Filter.DISCUSSED:
+    case FILTER.DISCUSSED:
       filteredPictures = getDiscussedPictures(pictures);
       break;
     default:
