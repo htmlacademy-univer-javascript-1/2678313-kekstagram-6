@@ -2,6 +2,7 @@ const renderPictures = (posts) => {
   const template = document.querySelector('#picture').content;
   const picturesContainer = document.querySelector('.pictures');
   const fragment = document.createDocumentFragment();
+  const filters = document.querySelector('.img-filters');
 
   posts.forEach((post) => {
     const pictureElement = template.querySelector('.picture').cloneNode(true);
@@ -20,6 +21,7 @@ const renderPictures = (posts) => {
   });
 
   picturesContainer.appendChild(fragment);
+  filters.classList.remove('img-filters--inactive');
 };
 
 export {renderPictures};

@@ -53,16 +53,6 @@ function initImageForm() {
     evt.stopPropagation();
   };
 
-  const hideOverlay = () => {
-    overlay.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-  };
-
-  const showOverlay = () => {
-    overlay.classList.remove('hidden');
-    document.body.classList.add('modal-open');
-  };
-
   const onFormSubmit = (evt) => {
     evt.preventDefault();
     const valid = pristine.validate();
@@ -78,16 +68,8 @@ function initImageForm() {
         closeOverlay();
         showSuccessMessage();
       })
-      .catch(() => {
-        hideOverlay();
-        showErrorMessage();
-
-        const restoreForm = () => {
-          showOverlay();
-          document.removeEventListener('error-closed', restoreForm);
-        };
-
-        document.addEventListener('error-closed', restoreForm);
+      .catch((err) => {
+        showErrorMessage(err.message);
       })
       .finally(() => {
         submitButton.disabled = false;

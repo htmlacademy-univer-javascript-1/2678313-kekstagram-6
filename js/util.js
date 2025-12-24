@@ -17,17 +17,15 @@ const getRandomInteger = (a, b) => {
 
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-const showErrorMessage = () => {
-  const template = document.querySelector('#error').content.cloneNode(true);
-  const message = template.querySelector('.error');
+const showMessage = ({templateId, messageClass, innerClass, buttonClass}) => {
+  const template = document.querySelector(templateId).content.cloneNode(true);
+  const message = template.querySelector(messageClass);
 
   document.body.append(message);
 
   const close = () => {
     message.remove();
     document.removeEventListener('keydown', onEsc);
-
-    document.dispatchEvent(new CustomEvent('error-closed')); // не уверен, что так можно, но другое в голову не пришло))
   };
 
   function onEsc(evt) {
@@ -37,57 +35,37 @@ const showErrorMessage = () => {
   }
 
   message.addEventListener('click', (evt) => {
-    if (evt.target.closest('.error__inner')) {
+    if (evt.target.closest(innerClass)) {
       return;
     }
     close();
   });
 
-  message.querySelector('.error__button').addEventListener('click', close);
+  message.querySelector(buttonClass).addEventListener('click', close);
   document.addEventListener('keydown', onEsc);
 };
 
-
 const showSuccessMessage = () => {
-  const template = document.querySelector('#success').content.cloneNode(true);
-  const message = template.querySelector('.success');
-
-  document.body.append(message);
-
-  const close = () => {
-    message.remove();
-    document.removeEventListener('keydown', onEsc);
-  };
-
-  function onEsc(evt) {
-    if (evt.key === 'Escape') {
-      close();
-    }
-  }
-
-  message.addEventListener('click', (evt) => {
-    if (evt.target.closest('.success__inner')) {
-      return;
-    }
-    close();
+  showMessage({
+    templateId: '#success',
+    messageClass: '.success',
+    innerClass: '.success__inner',
+    buttonClass: '.success__button',
   });
+};
 
-  message.querySelector('.success__button').addEventListener('click', close);
-  document.addEventListener('keydown', onEsc);
+const showErrorMessage = () => {
+  showMessage({
+    templateId: '#error',
+    messageClass: '.error',
+    innerClass: '.error__inner',
+    buttonClass: '.error__button',
+  });
 };
 
 const showLoadErrorMessage = (message) => {
-  const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = '100';
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.left = '0';
-  alertContainer.style.top = '0';
-  alertContainer.style.right = '0';
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '30px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
-
+  const template = document.querySelector('#server-error').content.cloneNode(true);
+  const alertContainer = template.querySelector('.server-error');
   alertContainer.textContent = message;
 
   document.body.append(alertContainer);
@@ -97,4 +75,15 @@ const showLoadErrorMessage = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export {createIdGenerator, getRandomInteger, getRandomArrayElement, showErrorMessage, showSuccessMessage, showLoadErrorMessage};
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+
+export {createIdGenerator, getRandomInteger, getRandomArrayElement, showErrorMessage, showSuccessMessage,
+  debounce, showLoadErrorMessage};
