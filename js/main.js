@@ -2,7 +2,7 @@ import { renderPictures } from './miniatures.js';
 import { initBigPicture } from './big-picture.js';
 import { initImageForm } from './form.js';
 import { getData } from './api.js';
-import { showLoadErrorMessage } from './util.js';
+import { showLoadErrorMessage, uploadPreviewImage } from './util.js';
 import { initFilters } from './filters.js';
 
 getData()
@@ -16,3 +16,4 @@ getData()
   });
 
 initImageForm();
+uploadPreviewImage();
