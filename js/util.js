@@ -1,4 +1,4 @@
-import {ALERT_SHOW_TIME, FILE_TYPES} from './constants.js';
+import {ALERT_SHOW_TIME} from './constants.js';
 
 const createIdGenerator = () => {
   let id = 0;
@@ -84,24 +84,6 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-const uploadPreviewImage = () => {
-  const form = document.querySelector('.img-upload__form');
-  const fileInput = form.querySelector('.img-upload__input');
-  const previewImage = form.querySelector('.img-upload__preview img');
-
-  fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
-    const fileName = file.name.toLowerCase();
-
-    const matches = FILE_TYPES.some((type) =>
-      fileName.endsWith(type)
-    );
-
-    if (matches) {
-      previewImage.src = URL.createObjectURL(file);
-    }
-  });
-};
 
 export {createIdGenerator, getRandomInteger, getRandomArrayElement, showErrorMessage, showSuccessMessage,
-  debounce, showLoadErrorMessage, uploadPreviewImage};
+  debounce, showLoadErrorMessage};
