@@ -1,6 +1,6 @@
-import {HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX} from './constants.js';
+import {HASHTAG_MAX_COUNT, HASHTAG_MAX_LENGTH, COMMENT_MAX_LENGTH, HASHTAGREGEX, FILE_TYPES} from './constants.js';
 import { sendData } from './api.js';
-import { showSuccessMessage, showErrorMessage } from './util.js';
+import { showSuccessMessage, showErrorMessage, showLoadErrorMessage } from './util.js';
 
 function initImageForm() {
   const form = document.querySelector('.img-upload__form');
@@ -76,6 +76,9 @@ function initImageForm() {
       });
   };
 
+  const previewImage = form.querySelector('.img-upload__preview img');
+  const effectsPreviews = form.querySelectorAll('.effects__preview');
+
   const openOverlay = () => {
     overlay.classList.remove('hidden');
     document.body.classList.add('modal-open');
@@ -119,8 +122,24 @@ function initImageForm() {
   }
 
   fileInput.addEventListener('change', () => {
-    if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    if (!file) {
+      return;
+    }
+
+    const fileName = file.name.toLowerCase();
+    const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
+
+    if (matches) {
+      const imageUrl = URL.createObjectURL(file);
+      previewImage.src = imageUrl;
+      effectsPreviews.forEach((preview) => {
+        preview.style.backgroundImage = `url(${imageUrl})`;
+      });
       openOverlay();
+    } else {
+      showLoadErrorMessage('Тип файла не поддерживается. Выберите изображение в формате JPG, JPEG или PNG.');
+      fileInput.value = '';
     }
   });
 
